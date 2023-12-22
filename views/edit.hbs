@@ -1,0 +1,60 @@
+<form
+  action="/expense/id"
+  method="POST"
+  class="mx-auto text-center"
+  style="width: 60%;"
+>
+
+  <p>*為必填欄位</p>
+  <div class="mb-5">
+    <label for="name" class="me-4 fs-4">名稱* :
+    </label>
+    <input type="text" id="name" style="height:35px" required />
+  </div>
+
+  <div class="mb-5">
+    <label for="date" class="me-4 fs-4">日期* :
+    </label>
+    <input
+      type="date"
+      id="date"
+      style="height:35px;width:182px;letter-spacing: 3px;"
+      required
+    />
+  </div>
+
+  <div class="mb-5">
+    <label for="category" class="me-4 fs-4">類別* :
+    </label>
+    <select
+      name="category"
+      style="height:35px; width: 182px ;letter-spacing: 5px"
+      class="fs-5"
+      required
+    >
+      <option value="" disabled selected hidden>請選擇類別</option>
+      <option value="home">家居物業</option>
+      <option value="traffic">交通出行</option>
+      <option value="amusement">休閒娛樂</option>
+      <option value="food">餐飲食品</option>
+      <option value="others">其他</option>
+    </select>
+  </div>
+
+  <div class="mb-5">
+    <label for="amount" class="me-4 fs-4">金額* :
+    </label>
+    <input type="number" id="amount" style="height:35px" min="1" required />
+  </div>
+
+  <div class="mx-auto" style="width: 30%;">
+    <button
+      type="submit"
+      class="fs-4 mt-4 btn btn-warning  d-inline-block"
+      style="width: 100%;border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px"
+    >修改</button>
+  </div>
+</form>
+
+<div class="mx-auto text-center mt-4" style="width:30%;">
+  <a href="/expense" class="pt-2 btn btn-outline-secondary btn-sm " style="width: 20%;height:40px">回主頁</a></div>
