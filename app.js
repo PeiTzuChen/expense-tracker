@@ -17,6 +17,8 @@ app.get("/", (req, res) => {
   res.redirect("/expense");
 });
 
+const icon = require("./public/icon.json");
+console.log(icon);
 app.get("/expense", (req, res) => {
   Record.findAll({
     attributes: ["id", "name", "date", "amount", "categoryId"],
@@ -28,9 +30,11 @@ app.get("/expense", (req, res) => {
       },
     ],
   }).then((record) => {
-    res.render("expense",{record});
+    record.forEach((element) => {
+      element.icon = icon[element["Category.name"]];
+    });
+    res.render("expense", { record });
   });
-  
 });
 
 app.post("/expense", (req, res) => {
