@@ -18,9 +18,10 @@
 
 <div style="width: 80%; margin-left:30%" >
   <ul class="list-group "></ul>
-  
+
 {{#each record}}
-   <li class="list-group-item d-inline-block d-inline-flex justify-content-between data-back-ground-color={{this.id}}" style="width: 50%;"><div class="d-inline-block fs-4">{{this.name}}<div class="fs-6">{{this.date}}</div></div>
+   <li  class="list-group-item d-inline-flex justify-content-between" style="width: 50%;" data-id="{{this.id}}">
+    <div class="d-inline-block fs-4">{{this.name}}<div class="fs-6">{{this.date}}</div></div>
    <span  class="d-inline-block fs-2 pt-2">{{this.amount}}</span></li> 
 
   <a href="/expense/id/edit" class="ms-3 mt-2 btn btn-outline-secondary btn-sm d-inline-block" style="width: 5%;">修改</a>
@@ -37,3 +38,5 @@
    <a href="/expense/new" class="fs-4 mt-4 ms-3 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
 </div>
 
+<script src="../backGndColor.js"> 
+</script>
