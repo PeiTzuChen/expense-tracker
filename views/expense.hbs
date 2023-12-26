@@ -21,7 +21,7 @@
   <ul class="list-group "></ul>
 
 {{#each records}}
-   <li  class="list-group-item d-inline-flex justify-content-between" style="width: 50%;" data-id="{{this.id}}">
+   <li  class="list-group-item d-inline-flex justify-content-between" style="width: 50%;" data-id="{{this.index}}">
     <div class="d-inline-block">
       <div class="d-inline fs-1 me-2"><i class="{{this.icon}} " style="width:20%; color:rgb(48, 172, 206)"></i></div>
     <div class="d-inline-block fs-4 ms-4">{{this.name}}<div class="fs-6">{{this.date}}</div></div>
@@ -31,7 +31,7 @@
 
   <a href="/expense/{{this.id}}/edit" class="ms-3 mb-4 btn btn-outline-secondary btn-sm d-inline-block" style="width: 5%;">修改</a>
 
-    <form action="/expense/id" method="POST" class="d-inline-block " style="width: 5%;">
+    <form action="/expense/{{this.id}}?_method=DELETE" method="POST" class="d-inline-block " style="width: 5%;">
     <button class="mb-4 ms-3 btn btn-outline-secondary btn-sm "style="width: 100%;" >刪除</button>
     </form>
 {{/each}}
@@ -40,7 +40,7 @@
 
 <div class="mx-auto" style="width: 30%;">
 
-   <a href="/expense/new" class="fs-4 mt-4 ms-3 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
+   <a href="/expense/new" class="fs-4 mt-4 ms-3 mb-5 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
 </div>
 
 <script src="../backGndColor.js"> 

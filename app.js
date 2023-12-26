@@ -32,9 +32,10 @@ app.get("/expense", (req, res) => {
       },
     ],
   }).then((records) => {
-    records.forEach((record) => {
+    records.forEach((record, index) => {
       record.icon = icon[record["Category.name"]];
       totalAmount += record.amount;
+      record.index = index;
     });
 
     res.render("expense", { records, totalAmount });
@@ -111,7 +112,12 @@ app.put("/expense/:id", (req, res) => {
     });
 });
 
-
+app.delete("/expense/:id", (req, res) => {
+  const id = req.params.id;
+  Record.destroy({ where: { id } }).then(() => {
+    res.redirect("/expense");
+  });
+});
 
 app.listen(port, () => {
   console.log(`express server listening on http://localhost:${port}`);
