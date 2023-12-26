@@ -1,25 +1,26 @@
 
 <div class=" mb-3 text-center">
-  <select name="category" style=" width: 20%" class="fs-5"  >
+  <form action="/expense/category" method="GET" id="category-form">
+  <select name="select" style="width: 20%" class="fs-5" id="category-select" >
     <option value="" disabled selected hidden>請選擇類別</option>
-    <option value="none">類別</option>
-    <option value="home">家居物業</option>
-    <option value="traffic">交通出行</option>
-    <option value="amusement">休閒娛樂</option>
-    <option value="food">餐飲食品</option>
-    <option value="others">其他</option>
+    <option value="家居物業">家居物業</option>
+    <option value="交通出行">交通出行</option>
+    <option value="休閒娛樂">休閒娛樂</option>
+    <option value="餐飲食品">餐飲食品</option>
+    <option value="其他">其他</option>
   </select>
+  </form>
 </div>
 
 <div style="width: 30%;"  class="mx-auto">
-<span>總金額：</span>
-<h1  style="font-size: 70px; color:rgb(255, 132, 0);padding-left:30%">25260</h1>
+<span class="fs-3">總金額：</span>
+<h1  style="font-size: 70px; color:rgb(255, 132, 0)" class="text-end">{{totalAmount}}</h1>
 </div>
 
 <div style="width: 80%; margin-left:30%" >
   <ul class="list-group "></ul>
 
-{{#each record}}
+{{#each records}}
    <li  class="list-group-item d-inline-flex justify-content-between" style="width: 50%;" data-id="{{this.id}}">
     <div class="d-inline-block">
       <div class="d-inline fs-1 me-2"><i class="{{this.icon}} " style="width:20%; color:rgb(48, 172, 206)"></i></div>

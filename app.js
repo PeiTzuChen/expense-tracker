@@ -18,10 +18,10 @@ app.get("/", (req, res) => {
 });
 
 const icon = require("./public/icon.json");
-console.log(icon);
 app.get("/expense", (req, res) => {
+  let totalAmount = 0;
   Record.findAll({
-    attributes: ["id", "name", "date", "amount", "categoryId"],
+    attributes: ["id", "name", "date", "amount"],
     raw: true,
     include: [
       {
@@ -29,11 +29,34 @@ app.get("/expense", (req, res) => {
         attributes: ["name"],
       },
     ],
-  }).then((record) => {
-    record.forEach((element) => {
-      element.icon = icon[element["Category.name"]];
+  }).then((records) => {
+    records.forEach((record) => {
+      record.icon = icon[record["Category.name"]];
+      totalAmount += record.amount;
     });
-    res.render("expense", { record });
+
+    res.render("expense", { records, totalAmount });
+  });
+});
+
+app.get("/expense/category", (req, res) => {
+  let totalAmount = 0;
+  const selectCategory = req.query.select;
+  Category.findOne({
+    where: { name: selectCategory },
+    raw: true,
+  }).then((category) => {
+    return Record.findAll({
+      attributes: ["id", "name", "date", "amount"],
+      raw: true,
+      where: { categoryId: category.id },
+    }).then((records) => {
+      records.forEach((record) => {
+        totalAmount += record.amount;
+        record.icon = icon[selectCategory];
+      });
+      res.render("expense", { records, totalAmount });
+    });
   });
 });
 
