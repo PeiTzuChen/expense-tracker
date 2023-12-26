@@ -10,3 +10,10 @@ const select = document.querySelector("#category-select");
 select.addEventListener("change", (event) => {
   form.submit();
 });
+
+const pageForm = document.querySelector("#page-number-form");
+const pageNumber = document.querySelector("#page-number");
+
+pageNumber.addEventListener("change", (event) => {
+  pageForm.submit();
+});

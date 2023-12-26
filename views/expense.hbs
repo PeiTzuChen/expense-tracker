@@ -38,9 +38,26 @@
 </ul>
 </div>
 
-<div class="mx-auto" style="width: 30%;">
+<div class="text-center">
+<form action="/expense" method="GET" class="d-inline-block mt-3">
+<input type="hidden" name="page" value="{{prev}}" >
+<button type="submit" class="btn btn-outline-secondary btn-sm mb-1">上一頁</button>
+</form>
 
-   <a href="/expense/new" class="fs-4 mt-4 ms-3 mb-5 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
+<form action="/expense" method="GET" class="d-inline-block ms-2 me-2" style="width: 20%;" id="page-number-form">
+<input type="number" name="page" id="page-number" value="{{pageNumber}}" style="width: 30%;height:32px" class="fs-5" >
+<span class="fs-5">/ {{totalPage}}</span>
+</form>
+
+<form action="/expense" method="GET" class="d-inline-block mt-3" >
+<input type="hidden" name="page" value="{{next}}">
+<button type="submit" class="btn btn-outline-secondary btn-sm mb-1">下一頁</button>
+</form>
+</div>
+
+
+<div class="mx-auto" style="width: 30%;">
+   <a href="/expense/new" class="fs-4 mt-4 mb-5 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
 </div>
 
 <script src="../backGndColor.js"> 

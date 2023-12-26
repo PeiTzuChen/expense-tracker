@@ -7,7 +7,7 @@ const Category = db.Category;
 const Record = db.Record;
 const icon = require("./public/icon.json");
 const methodOverride = require("method-override");
-
+const pageSize = 5;
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./views");
@@ -21,25 +21,41 @@ app.get("/", (req, res) => {
 });
 
 app.get("/expense", (req, res) => {
+  const pageNumber = parseInt(req.query.page) || 1;
   let totalAmount = 0;
-  Record.findAll({
-    attributes: ["id", "name", "date", "amount"],
-    raw: true,
-    include: [
-      {
-        model: Category,
-        attributes: ["name"],
-      },
-    ],
-  }).then((records) => {
-    records.forEach((record, index) => {
-      record.icon = icon[record["Category.name"]];
-      totalAmount += record.amount;
-      record.index = index;
-    });
 
-    res.render("expense", { records, totalAmount });
-  });
+  Record.sum("amount", {})
+    .then((sum) => {
+      totalAmount = sum;
+      return Record.findAndCountAll({
+        attributes: ["id", "name", "date", "amount"],
+        raw: true,
+        limit: pageSize,
+        offset: (pageNumber - 1) * pageSize,
+        include: [
+          {
+            model: Category,
+            attributes: ["name"],
+          },
+        ],
+      });
+    })
+    .then((data) => {
+      const totalPage = Math.ceil(data.count / pageSize);
+      const records = data.rows;
+      records.forEach((record, index) => {
+        record.icon = icon[record["Category.name"]];
+        record.index = index;
+      });
+      res.render("expense", {
+        records,
+        totalAmount,
+        pageNumber,
+        prev: pageNumber > 1 ? pageNumber - 1 : pageNumber,
+        next: pageNumber < totalPage ? pageNumber + 1 : pageNumber,
+        totalPage,
+      });
+    });
 });
 
 app.get("/expense/category", (req, res) => {
