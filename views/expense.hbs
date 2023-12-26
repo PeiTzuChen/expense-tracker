@@ -29,10 +29,10 @@
 
    <span  class="d-inline-block fs-2 pt-2">{{this.amount}}</span></li> 
 
-  <a href="/expense/id/edit" class="ms-3 mt-2 btn btn-outline-secondary btn-sm d-inline-block" style="width: 5%;">修改</a>
+  <a href="/expense/{{this.id}}/edit" class="ms-3 mb-4 btn btn-outline-secondary btn-sm d-inline-block" style="width: 5%;">修改</a>
 
     <form action="/expense/id" method="POST" class="d-inline-block " style="width: 5%;">
-    <button class="mt-2 ms-3 btn btn-outline-secondary btn-sm "style="width: 100%;" >刪除</button>
+    <button class="mb-4 ms-3 btn btn-outline-secondary btn-sm "style="width: 100%;" >刪除</button>
     </form>
 {{/each}}
 </ul>
