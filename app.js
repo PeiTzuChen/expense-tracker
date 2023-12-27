@@ -26,6 +26,9 @@ app.use(flash());
 app.use(messageHandler);
 app.use(router)
 
+
+
+
 app.use(errorHandler);
 app.listen(port, () => {
   console.log(`express server listening on http://localhost:${port}`);

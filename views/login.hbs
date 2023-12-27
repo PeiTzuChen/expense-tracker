@@ -1,0 +1,21 @@
+<h3 class="restaurant-show-title text-center">登入</h3>
+{{> messageHandler}}
+
+<div class="mx-auto " style="width: 200px";>
+<form action="/login" method="POST">
+<h5 class="mb-0 mt-3">信箱</h5>
+<input type="email" name="email" placeholder="Enter email" required>
+<h5 class="mb-0 mt-3">密碼</h5>
+<input type="password" name="password" placeholder="Enter password" required/>
+<button class="btn btn-outline-secondary btn-sm mb-3" type="submit" style="display: block;margin-top:15px">登入</button>
+</form>
+
+<form action="/auth/facebook" mathod="GET">
+<button type="submit" class=" btn btn-outline-secondary btn-sm mb-3">Google登入</button>
+</form>
+
+<form action="/register" method="GET">
+<button type="submit" class="mb-3 btn btn-outline-secondary btn-sm">註冊</button></form>
+</div>
+
+</div>

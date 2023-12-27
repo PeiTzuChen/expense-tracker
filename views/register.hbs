@@ -1,0 +1,18 @@
+<div class="mx-auto" style="width: 200px;">
+<h3 class="text-center restaurant-show-title">註冊</h3>
+{{> messageHandler}}
+<form action="/users" method="POST">
+<h5 class="mb-0 mt-3">名字</h5>
+<input type="text" name="name" placeholder="Enter name">
+<h5 class="mb-0 mt-3">信箱</h5>
+<input type="email" name="email" placeholder="Enter email" required>
+<h5 class="mb-0 mt-3">密碼</h5>
+<input type="password" name="password" placeholder="Enter password" required>
+<h5 class="mb-0 mt-3">驗證密碼</h5>
+<input type="password" name="confirmPassword" placeholder="Enter password" required/>
+<button type="submit" class="mb-3 btn btn-outline-secondary btn-sm" style="display: block;margin-top:15px">Register</button>
+</form>
+
+<form action="/login" method="GET">
+<button type="submit" class="mb-3 btn btn-outline-secondary btn-sm">直接登入</button></form>
+</div>
