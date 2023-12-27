@@ -1,3 +1,7 @@
+{{#if error_msg}}
+<div class="text-center mb-3" id="flash-message"> {{error_msg}} </div>
+{{/if}}
+
 <form
   action="/expense/{{record.id}}?_method=PUT"
   method="POST"
@@ -41,7 +45,8 @@
       class="fs-5"
       required
     >
-      <option value="" disabled selected hidden>請選擇類別</option>
+  
+      <option value="{{record.category }}" >{{record.category }}</option>
       <option value="家居物業">家居物業</option>
       <option value="交通出行">交通出行</option>
       <option value="休閒娛樂">休閒娛樂</option>

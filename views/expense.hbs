@@ -1,8 +1,21 @@
+{{#if message}}
+<div class="text-center mb-3" id="flash-message"> {{message}} </div>
+{{/if}}
+{{#if error_msg}}
+<div class="text-center mb-3" id="flash-message"> {{error_msg}} </div>
+{{/if}}
+
+
 
 <div class=" mb-3 text-center">
   <form action="/expense/category" method="GET" id="category-form">
   <select name="select" style="width: 20%" class="fs-5" id="category-select" >
+    
+    {{#if selectCategory}}
+    <option value="" disabled selected hidden>{{selectCategory}}</option>
+    {{else}}
     <option value="" disabled selected hidden>請選擇類別</option>
+     {{/if}}
     <option value="家居物業">家居物業</option>
     <option value="交通出行">交通出行</option>
     <option value="休閒娛樂">休閒娛樂</option>
@@ -38,6 +51,28 @@
 </ul>
 </div>
 
+
+{{#if selectCategory }}
+<div class="text-center">
+<form action="/expense/category" method="GET" class="d-inline-block mt-3">
+<input type="hidden" name="page" value="{{prev}}" >
+<input type="hidden" name="select" value="{{selectCategory}}" >
+<button type="submit" class="btn btn-outline-secondary btn-sm mb-1">上一頁</button>
+</form>
+
+<form action="/expense/category" method="GET" class="d-inline-block ms-2 me-2" style="width: 20%;" id="page-number-form">
+<input type="number" name="page" id="page-number" value="{{pageNumber}}" style="width: 30%;height:32px" class="fs-5"  min="1" max="{{totalPage}}">
+<input type="hidden" name="select" value="{{selectCategory}}" >
+<span class="fs-5">/ {{totalPage}}</span>
+</form>
+
+<form action="/expense/category" method="GET" class="d-inline-block mt-3" >
+<input type="hidden" name="page" value="{{next}}">
+<input type="hidden" name="select" value="{{selectCategory}}" >
+<button type="submit" class="btn btn-outline-secondary btn-sm mb-1">下一頁</button>
+</form>
+</div>
+{{else}}
 <div class="text-center">
 <form action="/expense" method="GET" class="d-inline-block mt-3">
 <input type="hidden" name="page" value="{{prev}}" >
@@ -45,7 +80,7 @@
 </form>
 
 <form action="/expense" method="GET" class="d-inline-block ms-2 me-2" style="width: 20%;" id="page-number-form">
-<input type="number" name="page" id="page-number" value="{{pageNumber}}" style="width: 30%;height:32px" class="fs-5" >
+<input type="number" name="page" id="page-number" value="{{pageNumber}}" style="width: 30%;height:32px" class="fs-5" min="1" max="{{totalPage}}">
 <span class="fs-5">/ {{totalPage}}</span>
 </form>
 
@@ -54,7 +89,7 @@
 <button type="submit" class="btn btn-outline-secondary btn-sm mb-1">下一頁</button>
 </form>
 </div>
-
+{{/if}}
 
 <div class="mx-auto" style="width: 30%;">
    <a href="/expense/new" class="fs-4 mt-4 mb-5 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
