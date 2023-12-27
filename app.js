@@ -8,8 +8,10 @@ const Record = db.Record;
 const icon = require("./public/icon.json");
 const methodOverride = require("method-override");
 const pageSize = 5;
-const flash = require("connect-flash")
-const session = require("express-session")
+const flash = require("connect-flash");
+const session = require("express-session");
+const messageHandler = require("./middleware/messageHandler");
+const errorHandler = require("./middleware/errorHandler");
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./views");
@@ -19,18 +21,19 @@ app.use(express.static("public"));
 app.use(methodOverride("_method"));
 app.use(
   session({
-    secret: 'keyword',
+    secret: "keyword",
     resave: false,
     saveUninitialized: false,
   })
 );
-app.use(flash())
+app.use(flash());
+app.use(messageHandler);
 
 app.get("/", (req, res) => {
   res.redirect("/expense");
 });
 
-app.get("/expense", (req, res) => {
+app.get("/expense", (req, res, next) => {
   const pageNumber = parseInt(req.query.page) || 1;
   let totalAmount = 0;
 
@@ -64,17 +67,15 @@ app.get("/expense", (req, res) => {
         prev: pageNumber > 1 ? pageNumber - 1 : pageNumber,
         next: pageNumber < totalPage ? pageNumber + 1 : pageNumber,
         totalPage,
-        message:req.flash('success'),
-        error_msg:req.flash('error')
       });
-    }).catch((error)=>{
-      console.error(error)
-      req.flash("error","資料處理失敗")
-      return res.redirect('back')
     })
+    .catch((error) => {
+      error.errorMessage = "資料處理失敗";
+      return next(error);
+    });
 });
 
-app.get("/expense/category", (req, res) => {
+app.get("/expense/category", (req, res, next) => {
   let totalAmount = 0;
   const pageNumber = parseInt(req.query.page) || 1;
   const selectCategory = req.query.select;
@@ -105,7 +106,7 @@ app.get("/expense/category", (req, res) => {
         record.icon = icon[selectCategory];
         record.index = index;
       });
-      res.render("expense", {
+      return res.render("expense", {
         records,
         totalAmount,
         pageNumber,
@@ -116,17 +117,16 @@ app.get("/expense/category", (req, res) => {
       });
     })
     .catch((error) => {
-      console.error(error);
-      req.flash("error", "資料處理失敗");
-      return res.redirect("back");
+      error.errorMessage = "資料處理失敗";
+      return next(error);
     });
 });
 
 app.get("/expense/new", (req, res) => {
-  res.render("new",{error_msg:req.flash("error")});
+  return res.render("new");
 });
 
-app.post("/expense", (req, res) => {
+app.post("/expense", (req, res, next) => {
   const { name, date, category, amount } = req.body;
 
   Category.findOne({ where: { name: category }, raw: true })
@@ -140,16 +140,15 @@ app.post("/expense", (req, res) => {
     })
     .then(() => {
       req.flash("success", "新增成功");
-      res.redirect("/expense");
+      return res.redirect("/expense");
     })
     .catch((error) => {
-      console.error(error);
-      req.flash("error", "資料新增失敗");
-      return res.redirect("back");
+      error.errorMessage = "資料新增失敗";
+      return next(error);
     });
 });
 
-app.get("/expense/:id/edit", (req, res) => {
+app.get("/expense/:id/edit", (req, res, next) => {
   const id = req.params.id;
   Record.findByPk(id, {
     raw: true,
@@ -158,16 +157,15 @@ app.get("/expense/:id/edit", (req, res) => {
   })
     .then((record) => {
       record.category = record["Category.name"];
-      res.render("edit", { record, error_msg: req.flash("error") });
+      return res.render("edit", { record });
     })
     .catch((error) => {
-      console.error(error);
-      req.flash("error", "資料處理失敗");
-      return res.redirect("back");
+      error.errorMessage = "資料處理失敗";
+      return next(error);
     });
 });
 
-app.put("/expense/:id", (req, res) => {
+app.put("/expense/:id", (req, res, next) => {
   const id = req.params.id;
   const { name, date, category } = req.body;
   const amount = parseInt(req.body.amount);
@@ -180,26 +178,28 @@ app.put("/expense/:id", (req, res) => {
     })
     .then(() => {
       req.flash("success", "修改成功");
-      res.redirect("/expense");
-    }).catch((error)=>{
-      console.error(error);
-      req.flash("error", "更新失敗");
-      return res.redirect("back");
+      return res.redirect("/expense");
     })
+    .catch((error) => {
+      error.errorMessage = "更新失敗";
+      return next(error);
+    });
 });
 
-app.delete("/expense/:id", (req, res) => {
+app.delete("/expense/:id", (req, res, next) => {
   const id = req.params.id;
-  Record.destroy({ where: { id } }).then(() => {
-    req.flash("success","刪除成功")
-    res.redirect("/expense");
-  }).catch((error)=>{
-      console.error(error);
-      req.flash("error", "刪除失敗");
-      return res.redirect("back");
+  Record.destroy({ where: { id } })
+    .then(() => {
+      req.flash("success", "刪除成功");
+      return res.redirect("/expense");
     })
+    .catch((error) => {
+      error.errorMessage = "刪除失敗";
+      return next(error);
+    });
 });
 
+app.use(errorHandler);
 app.listen(port, () => {
   console.log(`express server listening on http://localhost:${port}`);
 });

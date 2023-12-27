@@ -1,9 +1,4 @@
-{{#if message}}
-<div class="text-center mb-3" id="flash-message"> {{message}} </div>
-{{/if}}
-{{#if error_msg}}
-<div class="text-center mb-3" id="flash-message"> {{error_msg}} </div>
-{{/if}}
+{{> messageHandler}}
 
 
 
@@ -95,5 +90,5 @@
    <a href="/expense/new" class="fs-4 mt-4 mb-5 btn btn-warning d-inline-block" style="width: 100%; border: 2px solid rgb(211, 108, 12);color:rgb(255, 255, 255) ;letter-spacing: 2px">新增支出</a>
 </div>
 
-<script src="../backGndColor.js"> 
+<script src="../expense.js"> 
 </script>
