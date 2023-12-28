@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Record.belongsTo(models.User);
+      Record.belongsTo(models.User);
       Record.belongsTo(models.Category);
       // define association here
     }
@@ -26,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      // userId: {
-      //   type: DataTypes.INTEGER,
-      // },
+      userId: {
+        type: DataTypes.INTEGER,
+      },
       categoryId: {
         type: DataTypes.INTEGER,
       },
