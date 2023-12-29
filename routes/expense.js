@@ -9,10 +9,12 @@ const pageSize = 5;
 router.get("/", (req, res, next) => {
   const pageNumber = parseInt(req.query.page) || 1;
   let totalAmount = 0;
-  Record.sum("amount", {})
+  const userId = req.user.id;
+  Record.sum("amount", { where: { userId } })
     .then((sum) => {
       totalAmount = sum;
       return Record.findAndCountAll({
+        where: { userId },
         attributes: ["id", "name", "date", "amount"],
         raw: true,
         limit: pageSize,
@@ -52,6 +54,7 @@ router.get("/category", (req, res, next) => {
   const pageNumber = parseInt(req.query.page) || 1;
   const selectCategory = req.query.select;
   let categoryId = 0;
+  const userId = req.user.id;
 
   Category.findOne({
     where: { name: selectCategory },
@@ -59,7 +62,7 @@ router.get("/category", (req, res, next) => {
   })
     .then((category) => {
       categoryId = category.id;
-      return Record.sum("amount", { where: { categoryId } });
+      return Record.sum("amount", { where: { categoryId, userId } });
     })
     .then((sum) => {
       totalAmount = sum;
@@ -68,7 +71,7 @@ router.get("/category", (req, res, next) => {
         raw: true,
         limit: pageSize,
         offset: (pageNumber - 1) * pageSize,
-        where: { categoryId },
+        where: { categoryId, userId },
       });
     })
     .then((data) => {
@@ -100,7 +103,7 @@ router.get("/new", (req, res) => {
 
 router.post("/", (req, res, next) => {
   const { name, date, category, amount } = req.body;
-
+  const userId = req.user.id;
   Category.findOne({ where: { name: category }, raw: true })
     .then((category) => {
       return Record.create({
@@ -108,6 +111,7 @@ router.post("/", (req, res, next) => {
         date,
         amount,
         categoryId: category.id,
+        userId,
       });
     })
     .then(() => {
@@ -122,12 +126,17 @@ router.post("/", (req, res, next) => {
 
 router.get("/:id/edit", (req, res, next) => {
   const id = req.params.id;
+  const userId = req.user.id;
   Record.findByPk(id, {
     raw: true,
-    attributes: ["id", "name", "date", "amount"],
+    attributes: ["id", "name", "date", "amount", "userId"],
     include: Category,
   })
     .then((record) => {
+      if (record.userId !== userId) {
+        req.flash("error", "權限不足");
+        return res.redirect("/expense");
+      }
       record.category = record["Category.name"];
       return res.render("edit", { record });
     })
@@ -141,7 +150,18 @@ router.put("/:id", (req, res, next) => {
   const id = req.params.id;
   const { name, date, category } = req.body;
   const amount = parseInt(req.body.amount);
-  Category.findOne({ where: { name: category } })
+  const userId = req.user.id;
+  Record.findByPk(id, {
+    raw: true,
+    attributes: ["userId"],
+  })
+    .then((record) => {
+      if (record.userId !== userId) {
+        req.flash("error", "權限不足");
+        return res.redirect("/expense");
+      }
+      return Category.findOne({ where: { name: category } });
+    })
     .then((category) => {
       return Record.update(
         { name, date, amount, categoryId: category.id },
@@ -160,7 +180,18 @@ router.put("/:id", (req, res, next) => {
 
 router.delete("/:id", (req, res, next) => {
   const id = req.params.id;
-  Record.destroy({ where: { id } })
+  const userId = req.user.id;
+  Record.findByPk(id, {
+    raw: true,
+    attributes: ["userId"],
+  })
+    .then((record) => {
+      if (record.userId !== userId) {
+        req.flash("error", "權限不足");
+        return res.redirect("/expense");
+      }
+      return Record.destroy({where:{id}});
+    })
     .then(() => {
       req.flash("success", "刪除成功");
       return res.redirect("/expense");
@@ -171,4 +202,4 @@ router.delete("/:id", (req, res, next) => {
     });
 });
 
-module.exports=router
+module.exports = router;
