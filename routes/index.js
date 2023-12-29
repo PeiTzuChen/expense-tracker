@@ -14,10 +14,9 @@ router.use("/expense", authHandler, expense);
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "1046263501450-8jov0fsmsapfqm171mo68u4aaki7fphd.apps.googleusercontent.com",
-      clientSecret: "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",
-      callbackURL: "http://localhost:3000/oauth2/google/callback",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_URL,
       scope: ["profile", "email"],
     },
     (accessToken, refreshToken, profile, done) => {
