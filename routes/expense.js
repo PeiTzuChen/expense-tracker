@@ -9,7 +9,7 @@ const pageSize = 5;
 router.get("/", (req, res, next) => {
   const pageNumber = parseInt(req.query.page) || 1;
   let totalAmount = 0;
-
+console.log('user',req.user)
   Record.sum("amount", {})
     .then((sum) => {
       totalAmount = sum;

@@ -8,6 +8,7 @@ const session = require("express-session");
 const messageHandler = require("./middleware/messageHandler");
 const errorHandler = require("./middleware/errorHandler");
 const router =require('./routes')
+const passport = require("passport");
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./views");
@@ -22,6 +23,7 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(passport.authenticate("session"));
 app.use(flash());
 app.use(messageHandler);
 app.use(router)

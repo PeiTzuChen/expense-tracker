@@ -4,8 +4,52 @@ const expense = require("./expense");
 const db = require("../models");
 const User = db.User;
 const bcrypt = require("bcrypt");
-
+const GoogleStrategy = require("passport-google-oauth20");
+const passport = require("passport");
+const authHandler = require("../middleware/authHandler");
 router.use("/expense", expense);
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        "1046263501450-8jov0fsmsapfqm171mo68u4aaki7fphd.apps.googleusercontent.com",
+      clientSecret: "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",
+      callbackURL: "http://localhost:3000/oauth2/google/callback",
+      scope: ["profile", "email"],
+    },
+    (accessToken, refreshToken, profile, done) => {
+      const password = Math.random().toString(36).slice(-8);
+      const email = profile.emails[0].value;
+      const name = profile.displayName;
+
+      bcrypt.hash(password, 10).then((hash) => {
+        return User.findOrCreate({
+          where: { email },
+          raw: true,
+          defaults: {
+            password: hash,
+            name,
+            email,
+          },
+        }).then((user) => {
+          done(null, user[0]);
+        }).catch((error)=>{
+          error.errorMessage = "登入失敗";
+          return done(error);
+        })
+      });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, { id: user.id });
+});
+
+passport.deserializeUser((id, done) => {
+  done(null, id);
+});
 
 router.get("/register", (req, res) => {
   res.render("register");
@@ -75,5 +119,18 @@ router.get("/login", (req, res) => {
 router.get("/", (req, res) => {
   res.redirect("/expense");
 });
+
+router.get("/login/google", passport.authenticate("google"));
+
+router.get(
+  "/oauth2/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/expense",
+    failureRedirect: "/login",
+    failureMessage: true,
+  })
+);
+
+router.use(authHandler);
 
 module.exports = router;
