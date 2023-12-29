@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const GoogleStrategy = require("passport-google-oauth20");
 const passport = require("passport");
 const authHandler = require("../middleware/authHandler");
-router.use("/expense", expense);
+router.use("/expense", authHandler, expense);
 
 passport.use(
   new GoogleStrategy(
@@ -32,12 +32,14 @@ passport.use(
             name,
             email,
           },
-        }).then((user) => {
-          done(null, user[0]);
-        }).catch((error)=>{
-          error.errorMessage = "登入失敗";
-          return done(error);
         })
+          .then((user) => {
+            done(null, user[0]);
+          })
+          .catch((error) => {
+            error.errorMessage = "登入失敗";
+            return done(error);
+          });
       });
     }
   )
@@ -117,7 +119,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  res.redirect("/expense");
+  res.redirect("/login");
 });
 
 router.get("/login/google", passport.authenticate("google"));
@@ -131,6 +133,15 @@ router.get(
   })
 );
 
-router.use(authHandler);
+router.post("/logout", (req, res, next) => {
+  req.logout((error) => {
+    if (error) {
+      return next(error);
+    }
+    res.redirect("/login");
+  });
+});
+
+
 
 module.exports = router;
