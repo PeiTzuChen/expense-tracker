@@ -7,8 +7,10 @@ const bcrypt = require("bcrypt");
 const GoogleStrategy = require("passport-google-oauth20");
 const passport = require("passport");
 const authHandler = require("../middleware/authHandler");
+const LocalStrategy = require("passport-local");
 router.use("/expense", authHandler, expense);
 
+//google 登入
 passport.use(
   new GoogleStrategy(
     {
@@ -43,6 +45,36 @@ passport.use(
       });
     }
   )
+);
+
+passport.use(
+  new LocalStrategy({ usernameField: "email" }, (username, password, done) => {
+    User.findOne({
+      where: { email: username },
+      raw: true,
+    })
+      .then((user) => {
+        if (!user) {
+          return done(null, false, {
+            type: "error",
+            message: "信箱或密碼錯誤",
+          });
+        }
+        bcrypt.compare(password, user.password).then((result) => {
+          if (!result) {
+            return done(null, false, {
+              type: "error",
+              message: "密碼錯誤",
+            });
+          }
+          done(null, user);
+        });
+      })
+      .catch((error) => {
+        error.errorMessage = "登入失敗";
+        return done(error);
+      });
+  })
 );
 
 passport.serializeUser((user, done) => {
@@ -129,7 +161,16 @@ router.get(
   passport.authenticate("google", {
     successRedirect: "/expense",
     failureRedirect: "/login",
-    failureMessage: true,
+    failureFlash: true,
+  })
+);
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/expense",
+    failureRedirect: "/login",
+    failureFlash:true,
   })
 );
 
@@ -141,7 +182,5 @@ router.post("/logout", (req, res, next) => {
     res.redirect("/login");
   });
 });
-
-
 
 module.exports = router;
