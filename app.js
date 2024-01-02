@@ -11,7 +11,8 @@ const session = require("express-session");
 const messageHandler = require("./middleware/messageHandler");
 const errorHandler = require("./middleware/errorHandler");
 const router = require("./routes");
-const passport = require("passport");
+const passport = require("./config/passport");
+
 app.engine(".hbs", engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.set("views", "./views");
@@ -30,8 +31,8 @@ app.use(passport.authenticate("session"));
 app.use(flash());
 app.use(messageHandler);
 app.use(router);
-
 app.use(errorHandler);
+
 app.listen(port, () => {
   console.log(`express server listening on http://localhost:${port}`);
 });
