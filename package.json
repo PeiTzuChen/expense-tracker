@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development node app.js",
+    "start": "node app.js",
     "dev": " NODE_ENV=development nodemon app.js",
     "seed": "npx sequelize db:seed:all",
     "test": "echo \"Error: no test specified\" && exit 1"

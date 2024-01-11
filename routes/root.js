@@ -19,10 +19,6 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-router.get("/", (req, res) => {
-  res.redirect("/login");
-});
-
 router.post("/logout", (req, res, next) => {
   req.logout((error) => {
     if (error) {
@@ -31,5 +27,7 @@ router.post("/logout", (req, res, next) => {
     res.redirect("/login");
   });
 });
-
+router.get("/", (req, res) => {
+  res.redirect("/login");
+});
 module.exports = router;
