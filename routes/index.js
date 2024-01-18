@@ -6,7 +6,7 @@ const root = require("./root");
 const users = require("./users");
 const authHandler = require("../middleware/authHandler");
 
-router.use("users",users);
+router.use("/users",users);
 router.use("/oauth2", oauth20);
 router.use("/",root);
 router.use("/expense", authHandler, expense);
