@@ -35,7 +35,7 @@ npx sequelize db:migrate
 SESSION_SECRET=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET= 
-GOOGLE_URL= 
+GOOGLE_URL= http://localhost:3000/oauth2/google/callback
 ```
 5.Check environment variable NODE_ENV=development or ignore this step if under MAC/Linux systems
 
